@@ -1,0 +1,25 @@
+Login to VM.
+
+1)	Search Lun id’s with multipath command
+               [root@DCNEO-MZU-PFBDB04 ~]# multipath -ll | grep dm-
+               [root@DCNEO-MZU-PFBDB04 ~]# multipath -ll | grep -i 0079f
+
+2)	Now flush the lun
+              [root@DCNEO-MZU-PFBDB04 ~]# multipath -f mpathe
+
+3)	Take backup of the multipath.conf file
+4)	Comment or delete entry from multipath conf and restar it.
+
+5)	Search lpar in hmc
+
+6)	Click on LPAR
+
+7)	Click on storage - storage name
+
+8)	Click on modify
+
+9)	Click next  search lun which u want to delete
+
+10)	Clikc delete
+
+11)	Click next > click next > click done
