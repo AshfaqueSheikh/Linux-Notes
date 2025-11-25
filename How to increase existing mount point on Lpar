@@ -1,0 +1,49 @@
+1) We got request from respected team and mount point name with LUN.
+
+2) open Hmc console and find repected Lpar.
+
+3) Open Lpar go inside that in storage 
+
+4) Click on LPAR name and then click on connection report it will show you storage if not then storage not assign yet
+
+5) Take cli session of that LPAR/KVM/Vm.
+
+6) ip r       ---confirm the Ip of server
+
+7) multipath -ll
+
+8) multipath -ll | grep -i 49A  ---check that LUN Id visibal or not (49A) last digit of LUN
+
+9) df -hT     ---Check Mount point is existed in my case (DRNEO-MZP-EDB02 10.16.45.48 and I have to increase /pgsql-data-shared mount point)
+
+10) cat /etc/multipath.conf | grep -i shared  --- It will show you Shared has attched Dsk attached, like (EDBDATASHARED-DISK2)
+
+11) Go to Hmc and add Disk with next number (EDBDATASHARED-DISK3)
+
+12) Take Cli session of that vm and backup of multipath.conf file cp /etc/multipath.conf /tmp  (or in swdump)
+
+13) rescan-scsi-bus.sh   --- It will scan storage and showing you newly assign storage.
+
+14) vi /etc/multipath.conf  --- Here add that LUN and name EDBDATASHARED-DISK3        ORABIN-DISK0
+ 
+15) systemctl restart multipathd.service  --- It will restart the service and you can see the changes
+
+16) rescan-scsi-bus.sh  ---Now that disk is visible with name
+ 
+17) multipath -ll | grep -i shared  --- (shared is my mount pointname and I used Lun attached Disk with sahre name )
+
+18) pvcreate -f /dev/mapper/EDBDATASHARED-DISK3
+ 
+19) vgs  --- Here you can see the name of vg for refrence like (EDBDATASHAREDVG)
+   
+20) vgextend EDBDATASHAREDVG /dev/mapper/EDBDATASHARED-DISK3
+  
+21) df -hT
+
+22) lvs
+
+23) lvextend -l +100%FREE /dev/mapper/EDBDATASHAREDVG-EDBDATASHAREDLV
+
+24) xfs_growfs /dev/mapper/EDBDATASHAREDVG-EDBDATASHAREDLV
+  
+25) df -hT  --- /pgsql-data-shared mount point has been increased
