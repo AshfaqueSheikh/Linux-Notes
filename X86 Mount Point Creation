@@ -1,0 +1,14 @@
+1) for host in `ls /sys/class/scsi_host`; do echo "Scanning $host...Completed" ; echo "- - -" > /sys/class/scsi_host/$host/scan; done    -- This command scan new disk
+2) lsblk  -- list of all block device if new device is not visible then it is not assign it.
+    mkdir /backup_lentra    -- create directory for new mount point
+    pvcreate /dev/sdc   -- physicle volume
+    vgs                 -- check created or not pv
+    vgcreate backupvg /dev/sdc  -- virtual group
+    lvcreate -l 100%free -n backuplv backupvg  -- logical volume create 
+    mkfs.xfs /dev/backupvg/backuplv    --- filesystem create
+    mount /dev/backupvg/backuplv /backup_lentra   -- mount 
+    df -hT      -- check mount point creation
+    vi /etc/fstab   -- entry for permanent 
+    mount -a        --
+    for host in `ls /sys/class/scsi_host`; do echo "Scanning $host...Completed" ; echo "- - -" > /sys/class/scsi_host/$host/scan; done
+    lsblk
