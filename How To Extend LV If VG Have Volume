@@ -1,0 +1,7 @@
+vgs ----check available space is there or not if not then cr raise
+
+if available space is there then performe following steps
+
+lvextend -L +10G file system name   ---- like /dev/mapper/rootvg-homelv
+
+xfs_growfs /dev/mapper/rootvg-homelv
